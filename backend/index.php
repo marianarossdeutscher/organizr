@@ -1,8 +1,8 @@
 <?php
 date_default_timezone_set('UTC');
-require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '\vendor\autoload.php';
 
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
