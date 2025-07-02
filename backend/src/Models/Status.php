@@ -6,7 +6,7 @@ class Status {
     public string $name;
 
     public function __construct(array $data = []) {
-        $this->id   = $data['id'] ?? null;
+        $this->id   = $data['taskid'] ?? null;
         $this->name = $data['name'] ?? '';
     }
 }

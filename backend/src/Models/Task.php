@@ -11,7 +11,7 @@ class Task {
     public string $status;
 
     public function __construct(array $data = []) {
-        $this->id          = $data['id'] ?? null;
+        $this->id          = $data['taskid'] ?? null;
         $this->title       = $data['title'] ?? '';
         $this->description = $data['description'] ?? '';
         $this->beginDate   = $data['begin_date'] ?? '';

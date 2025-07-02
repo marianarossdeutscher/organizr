@@ -13,7 +13,7 @@ class Database {
             $db   = Config::get('DB_NAME');
             $user = Config::get('DB_USER');
             $pass = Config::get('DB_PASS');
-            $dsn  = "pgsql:host=$host;port=$port;dbname=$db";
+            $dsn  = "pgsql:host=localhost;port=5432;dbname=organizr;user=postgres;password=Nana2002#";
 
             self::$instance = new PDO($dsn, $user, $pass, [
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
