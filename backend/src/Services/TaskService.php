@@ -7,7 +7,8 @@ use Src\Models\Task;
 class TaskService {
     private TaskRepository $tasks;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->tasks = new TaskRepository();
     }
 
@@ -16,8 +17,19 @@ class TaskService {
      *
      * @return Task[]
      */
-    public function list(): array {
+    public function list(): array
+    {
         return $this->tasks->all();
+    }
+
+    /**
+     * Retorna os dados de uma tarefa.
+     *
+     * @return User
+     */
+    public function getUserById(int $id): Task 
+    {
+        return $this->tasks->findById($id);
     }
 
     /**
@@ -27,7 +39,8 @@ class TaskService {
      * @return Task
      * @throws \InvalidArgumentException Se dados inválidos.
      */
-    public function create(array $data): Task {
+    public function create(array $data): Task
+    {
         if (empty($data['title']) || empty($data['description'])) {
             throw new \InvalidArgumentException('Título e descrição são obrigatórios.');
         }
@@ -40,13 +53,14 @@ class TaskService {
     /**
      * Atualiza uma tarefa existente.
      *
-     * @param int   $id   ID da tarefa.
+     * @param int   $id ID da tarefa.
      * @param array $data Dados para atualização.
      * @return Task
-     * @throws \RuntimeException Se tarefa não for encontrada.
      */
-    public function update(int $id, array $data): Task {
+    public function update(int $id, array $data): Task
+    {
         $existing = $this->tasks->findById($id);
+
         if (!$existing) {
             throw new \RuntimeException("Tarefa com ID {$id} não encontrada.");
         }
@@ -54,10 +68,11 @@ class TaskService {
         foreach ([
             'title',
             'description',
-            'status',
-            'due_date'
+            'end_date',
+            'priority',
+            'status'
         ] as $field) {
-            if (array_key_exists($field, $data)) {
+            if (array_key_exists($field, $data) && $data[$field] !== null) {
                 $existing->{$field} = $data[$field];
             }
         }
@@ -72,7 +87,8 @@ class TaskService {
      * @return bool
      * @throws \RuntimeException Se tarefa não for encontrada.
      */
-    public function delete(int $id): bool {
+    public function delete(int $id): bool
+    {
         $existing = $this->tasks->findById($id);
         if (!$existing) {
             throw new \RuntimeException("Tarefa com ID {$id} não encontrada.");

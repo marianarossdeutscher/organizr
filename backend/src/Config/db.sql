@@ -17,7 +17,6 @@ CREATE TABLE task (
   title          VARCHAR(255)    NOT NULL,
   description    TEXT,
   register_date  TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  begin_date     TIMESTAMP,
   end_date       TIMESTAMP,
   priority       INTEGER,
   status         task_status     NOT NULL DEFAULT 'to_do'

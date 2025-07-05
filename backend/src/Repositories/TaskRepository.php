@@ -1,5 +1,8 @@
 <?php
+
 namespace Src\Repositories;
+
+date_default_timezone_set('America/Sao_Paulo');
 
 use Src\Config\Database;
 use Src\Models\Task;
@@ -8,7 +11,8 @@ use PDO;
 class TaskRepository {
     private PDO $db;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->db = Database::getConnection();
     }
 
@@ -17,7 +21,8 @@ class TaskRepository {
      *
      * @return Task[]
      */
-    public function all(): array {
+    public function all(): array
+    {
         $stmt = $this->db->query('SELECT * FROM task');
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return array_map(fn(array $row) => new Task($row), $rows);
@@ -29,15 +34,21 @@ class TaskRepository {
      * @param Task $task
      * @return Task
      */
-    public function create(Task $task): Task {
+    public function create(Task $task): Task
+    {
         $stmt = $this->db->prepare(
-            'INSERT INTO task (title, description, end_date) VALUES (:title, :description, :end_date) RETURNING *'
+            'INSERT INTO task (title, description, register_date, end_date, priority) 
+            VALUES (:title, :description, :register_date, :end_date, :priority) RETURNING *'
         );
+
         $stmt->execute([
-            ':title'   => $task->title,
+            ':title'         => $task->title,
             ':description'   => $task->description,
-            ':end_date' => $task->endDate
+            ':register_date' => date('Y-m-d H:i:s'),
+            ':end_date'      => $task->endDate,
+            ':priority'      => $task->priority
         ]);
+
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
         return new Task($data);
     }
@@ -48,9 +59,11 @@ class TaskRepository {
      * @param int $id
      * @return Task|null
      */
-    public function findById(int $id): ?Task {
+    public function findById(int $id): ?Task
+    {
         $stmt = $this->db->prepare('SELECT * FROM task WHERE taskid = :taskid');
         $stmt->execute([':taskid' => $id]);
+
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
         return $data ? new Task($data) : null;
     }
@@ -61,21 +74,28 @@ class TaskRepository {
      * @param Task $task
      * @return Task
      */
-    public function update(Task $task): Task {
+    public function update(Task $task): Task
+    {
         $stmt = $this->db->prepare(
             'UPDATE task
-             SET title = :title,
-                description = :description,
-                end_date = :end_date
-             WHERE taskid = :taskid
-             RETURNING *'
+                SET title       = :title,
+                    description = :description,
+                    end_date    = :end_date,
+                    priority    = :priority,
+                    status      = :status
+            WHERE taskid = :taskid
+            RETURNING *'
         );
+
         $stmt->execute([
-            ':title'   => $task->title,
-            ':description'   => $task->description,
-            ':end_date' => $task->endDate,
-            ':taskid'  => $task->id
+            ':title'       => $task->title,
+            ':description' => $task->description,
+            ':end_date'    => $task->endDate,
+            ':priority'    => $task->priority,
+            ':status'      => $task->status,
+            ':taskid'      => $task->id,
         ]);
+
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
         return new Task($data);
     }
@@ -86,9 +106,11 @@ class TaskRepository {
      * @param int $id
      * @return bool
      */
-    public function delete(int $id): bool {
+    public function delete(int $id): bool
+    {
         $stmt = $this->db->prepare('DELETE FROM task WHERE taskid = :taskid');
         $stmt->execute([':taskid' => $id]);
+
         return $stmt->rowCount() > 0;
     }
 }
