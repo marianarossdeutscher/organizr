@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "projeto-web-ecommerce": {
+    "organizr-frontend": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -61,10 +61,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "projeto-web-ecommerce:build:production"
+              "buildTarget": "organizr-frontend:build:production"
             },
             "development": {
-              "buildTarget": "projeto-web-ecommerce:build:development"
+              "buildTarget": "organizr-frontend:build:development"
             }
           },
           "defaultConfiguration": "development"
