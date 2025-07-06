@@ -1,15 +1,24 @@
 <?php return array(
     'root' => array(
         'name' => 'organizer/backend',
-        'pretty_version' => 'dev-master',
-        'version' => 'dev-master',
-        'reference' => 'c3646bbd986550592c2ab727fb4b23000fc08ff0',
+        'pretty_version' => 'dev-main',
+        'version' => 'dev-main',
+        'reference' => '125cd171717ef35027fe1ae52b52ce02cf8772b5',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
         'dev' => true,
     ),
     'versions' => array(
+        'firebase/php-jwt' => array(
+            'pretty_version' => 'v6.11.1',
+            'version' => '6.11.1.0',
+            'reference' => 'd1e91ecf8c598d073d0995afa8cd5c75c6e19e66',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../firebase/php-jwt',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
         'graham-campbell/result-type' => array(
             'pretty_version' => 'v1.1.3',
             'version' => '1.1.3.0',
@@ -20,9 +29,9 @@
             'dev_requirement' => false,
         ),
         'organizer/backend' => array(
-            'pretty_version' => 'dev-master',
-            'version' => 'dev-master',
-            'reference' => 'c3646bbd986550592c2ab727fb4b23000fc08ff0',
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
+            'reference' => '125cd171717ef35027fe1ae52b52ce02cf8772b5',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

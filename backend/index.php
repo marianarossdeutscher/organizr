@@ -52,9 +52,6 @@ switch (true) {
     case $method === 'GET' && preg_match('~^/users/(\d+)$~', $uri, $m):
         (new UserController())->show((int)$m[1]);
         break;
-    case $method === 'POST' && $uri === '/users':
-        (new UserController())->create();
-        break;
     case $method === 'PUT' && preg_match('~^/users/(\d+)$~', $uri, $m):
         (new UserController())->update((int)$m[1]);
         break;

@@ -1,6 +1,5 @@
 <?php
 namespace Src\Models;
-date_default_timezone_set('America/Sao_Paulo');
 
 class Task {
     public ?int $id;
@@ -18,5 +17,59 @@ class Task {
         $this->endDate      = $data['end_date'] ?? '';
         $this->priority     = $data['priority'] ?? 0;
         $this->status       = $data['status'] ?? '';
+    }
+
+    /**
+     * Retorna o id da tarefa
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    /**
+     * Retorna o título da tarefa
+     * @return string
+    */
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
+
+    /**
+     * Retorna a descrição da tarefa
+     * @return string
+    */
+    public function getDescription(): string
+    {
+        return $this->description;
+    }
+
+    /**
+     * Retorna o prazo final da tarefa
+     * @return string|null
+    */
+    public function getEndDate(): ?string
+    {
+        return $this->endDate;
+    }
+
+    /**
+     * Retorna a prioridade da tarefa
+     * @return int
+    */
+    public function getPriority(): int
+    {
+        return $this->priority;
+    }
+
+    /**
+     * Retorna o status da tarefa
+     * @return string
+    */
+    public function getStatus(): string
+    {
+        return $this->status;
     }
 }

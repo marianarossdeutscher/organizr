@@ -8,7 +8,8 @@ use Firebase\JWT\JWT;
 class AuthService {
     private UserRepository $users;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->users = new UserRepository();
     }
 
@@ -19,7 +20,8 @@ class AuthService {
      * @return User
      * @throws \InvalidArgumentException Se faltar algum campo
      */
-    public function register(array $data): User {
+    public function register(array $data): User
+    {
         if (empty($data['username']) || empty($data['email']) || empty($data['password'])) {
             throw new \InvalidArgumentException('Username, email e senha são obrigatórios.');
         }
@@ -41,7 +43,8 @@ class AuthService {
      * @return string JWT token
      * @throws \RuntimeException Se credenciais inválidas
      */
-    public function login(string $email, string $password): string {
+    public function login(string $email, string $password): string
+    {
         $user = $this->users->findByEmail($email);
         if (!$user) {
             throw new \RuntimeException('Usuário não encontrado.');
@@ -59,7 +62,7 @@ class AuthService {
             'exp' => $exp,
         ];
 
-        $secret = getenv('JWT_SECRET');
+        $secret = $_ENV['JWT_SECRET'] ?? null;
         if (!$secret) {
             throw new \RuntimeException('JWT secret não configurado.');
         }

@@ -28,24 +28,6 @@ class UserController {
     }
 
     /**
-     * Cria um novo usuário.
-     */
-    public function create(): void
-    {
-        header('Content-Type: application/json');
-        $data = json_decode(file_get_contents('php://input'), true) ?? [];
-
-        try {
-            $user = $this->service->create($data);
-            http_response_code(201);
-            echo json_encode($user);
-        } catch (\Exception $e) {
-            http_response_code(400);
-            echo json_encode(['error' => $e->getMessage()]);
-        }
-    }
-
-    /**
      * Atualiza os dados de um usuário existente.
      *
      * @param int $id

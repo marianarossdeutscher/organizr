@@ -27,7 +27,7 @@ class TaskService {
      *
      * @return User
      */
-    public function getUserById(int $id): Task 
+    public function getTaskById(int $id): Task 
     {
         return $this->tasks->findById($id);
     }

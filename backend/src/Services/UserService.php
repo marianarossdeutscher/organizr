@@ -33,24 +33,6 @@ class UserService {
     }
 
     /**
-     * Cria um novo usuário.
-     *
-     * @param array $data Dados para criação do usuário.
-     * @return User
-     * @throws \InvalidArgumentException Se dados inválidos.
-     */
-    public function create(array $data): User
-    {
-        if (empty($data['username']) || empty($data['email']) || empty($data['password_hash'])) {
-            throw new \InvalidArgumentException('Nome de usuário, e-mail e senha são obrigatórios.');
-        }
-
-        $user = new User($data);
-
-        return $this->users->create($user);
-    }
-
-    /**
      * Atualiza um usuário existente.
      *
      * @param int   $id ID do usuário.
