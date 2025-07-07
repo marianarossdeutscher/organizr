@@ -1,0 +1,55 @@
+$bg-color: #F4F7F6;
+$primary-text: #172B4D;
+$secondary-text: #6B778C;
+$border-color: #EBECF0;
+$primary-accent: #4A90E2;
+
+.task-column {
+  background-color: $bg-color;
+  border-radius: 12px;
+  padding: 15px;
+  height: fit-content;
+
+  .column-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 0 5px;
+
+    h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: $primary-text;
+    }
+
+    .task-count {
+      background-color: $border-color;
+      color: $secondary-text;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 12px;
+    }
+  }
+
+  .add-task-btn {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    background-color: lighten($primary-accent, 38%);
+    color: $primary-accent;
+    cursor: pointer;
+    margin-bottom: 15px;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: lighten($primary-accent, 35%);
+    }
+  }
+
+  .tasks-list {
+    min-height: 50px;
+  }
+}

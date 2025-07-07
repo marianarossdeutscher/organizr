@@ -1,0 +1,96 @@
+$white: #FFFFFF;
+$primary-text: #172B4D;
+$secondary-text: #6B778C;
+$bg-color: #F4F7F6;
+
+.task-card {
+  background: $white;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  position: relative;
+  cursor: pointer;
+  transition: box-shadow 0.2s;
+
+  &:hover {
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+
+  h4 {
+    font-size: 15px;
+    margin-bottom: 8px;
+    color: $primary-text;
+    font-weight: 600;
+  }
+  p {
+    font-size: 14px;
+    color: $secondary-text;
+    line-height: 1.4;
+    margin-bottom: 15px;
+  }
+
+  .task-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .task-users {
+    display: flex;
+    .task-user-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background-color: orange;
+      border: 2px solid $white;
+      &:not(:first-child) {
+        margin-left: -10px;
+      }
+      &:nth-child(2) { background-color: mediumpurple; }
+      &:nth-child(3) { background-color: lightseagreen; }
+    }
+  }
+
+  .task-date {
+    font-size: 12px;
+    color: $secondary-text;
+  }
+
+  .card-options {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 5px;
+    border-radius: 50%;
+    &:hover { background-color: $bg-color; }
+    
+    svg { 
+        color: $secondary-text;
+        pointer-events: none;
+    }
+    
+    .options-menu {
+        position: absolute;
+        top: 30px;
+        right: 0;
+        background: $white;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        z-index: 10;
+        width: 120px;
+        overflow: hidden;
+
+        a {
+            display: block;
+            padding: 10px 15px;
+            color: $primary-text;
+            font-size: 14px;
+            text-decoration: none;
+            &:hover {
+                background-color: $bg-color;
+            }
+        }
+    }
+  }
+}

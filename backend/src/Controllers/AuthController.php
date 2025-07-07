@@ -2,6 +2,7 @@
 namespace Src\Controllers;
 
 use Src\Services\AuthService;
+use Exception;
 
 class AuthController {
     private AuthService $service;
@@ -13,15 +14,49 @@ class AuthController {
 
     public function register(): void
     {
-        $input = json_decode(file_get_contents('php://input'), true);
-        $user  = $this->service->register($input);
-        echo json_encode($user);
+        header('Content-Type: application/json');
+        try {
+            $input = json_decode(file_get_contents('php://input'), true);
+
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                throw new Exception('JSON inválido.');
+            }
+            
+            // NOVO: Validação para o campo username
+            if (empty($input['username']) || empty($input['email']) || empty($input['password'])) {
+                 throw new Exception('Nome de utilizador, email e palavra-passe são obrigatórios.');
+            }
+            
+            $user = $this->service->register($input);
+
+            http_response_code(201);
+            echo json_encode($user);
+
+        } catch (Exception $e) {
+            http_response_code(400);
+            echo json_encode(['message' => $e->getMessage()]);
+        }
     }
 
     public function login(): void
     {
-        $input = json_decode(file_get_contents('php://input'), true);
-        $token = $this->service->login($input['email'], $input['password']);
-        echo json_encode(['token' => $token]);
+        header('Content-Type: application/json');
+        try {
+            $input = json_decode(file_get_contents('php://input'), true);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                throw new Exception('JSON inválido.');
+            }
+            if (!isset($input['email']) || !isset($input['password'])) {
+                http_response_code(400);
+                echo json_encode(['message' => 'Email e senha são obrigatórios.']);
+                return;
+            }
+            $token = $this->service->login($input['email'], $input['password']);
+            http_response_code(200);
+            echo json_encode(['token' => $token]);
+        } catch (Exception $e) {
+            http_response_code(401);
+            echo json_encode(['message' => $e->getMessage()]);
+        }
     }
 }

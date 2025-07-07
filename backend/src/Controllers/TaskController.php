@@ -2,178 +2,107 @@
 namespace Src\Controllers;
 
 use Src\Services\TaskService;
-use Src\Services\TaskShareService;
-use Src\Repositories\TaskShareRepository;
-use Src\Repositories\UserRepository;
-use Src\Config\Database;
+use Exception;
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 
 class TaskController {
     private TaskService $service;
-    private TaskShareService $shareService;
+    private int $userId;
 
     public function __construct()
     {
         $this->service = new TaskService();
-
-        $pdo = Database::getConnection();
-        $this->shareService = new TaskShareService(
-            new TaskShareRepository($pdo),
-            new UserRepository($pdo)
-        );
+        // A autenticação é agora a primeira coisa que acontece.
+        $this->authenticate();
     }
 
     /**
-     * Lista todas as tarefas.
+     * Verifica o token JWT e extrai o ID do utilizador.
+     * Este método é o "porteiro" da sua API de tarefas.
+     */
+    private function authenticate(): void
+    {
+        try {
+            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+
+            if (!$authHeader) {
+                throw new Exception("Token de autorização não encontrado.");
+            }
+
+            list($jwt) = sscanf($authHeader, 'Bearer %s');
+
+            if (!$jwt) {
+                throw new Exception("Formato de token inválido.");
+            }
+
+            $secret = $_ENV['JWT_SECRET'] ?? 'your_default_secret';
+            $decoded = JWT::decode($jwt, new Key($secret, 'HS256'));
+
+            $this->userId = $decoded->sub; 
+        } catch (Exception $e) {
+            http_response_code(401);
+            header('Content-Type: application/json');
+            echo json_encode(['error' => 'Acesso não autorizado: ' . $e->getMessage()]);
+
+            exit();
+        }
+    }
+
+    /**
+     * Lista apenas as tarefas do utilizador autenticado.
      */
     public function index(): void
     {
         header('Content-Type: application/json');
-        $tasks = $this->service->list();
-        $response = [];
-
-        foreach ($tasks as $task) {
-            $response[] = [
-                'id'          => $task->getId(),
-                'title'       => $task->getTitle(),
-                'description' => $task->getDescription(),
-                'endDate'     => $task->getEndDate(),
-                'priority'    => $task->getPriority(),
-                'status'      => $task->getStatus(),
-                'shared_with' => $this->shareService->getSharedWith($task->getId()),
-            ];
-        }
-
-        echo json_encode($response);
+        $tasks = $this->service->listByUser($this->userId); 
+        echo json_encode($tasks);
     }
 
     /**
-     * Lista os dados de uma tarefa pelo id.
-     */
-    public function show(int $id): void
-    {
-        header('Content-Type: application/json');
-        try {
-            $task = $this->service->getTaskById($id);
-
-            $shared = $this->shareService->getSharedWith($id);
-
-            $out = [
-                'id'          => $task->getId(),
-                'title'       => $task->getTitle(),
-                'description' => $task->getDescription(),
-                'endDate'     => $task->getEndDate(),
-                'priority'    => $task->getPriority(),
-                'status'      => $task->getStatus(),
-                'shared_with' => $shared,
-            ];
-
-            echo json_encode($out);
-        } catch (\RuntimeException $e) {
-            http_response_code(404);
-            echo json_encode(['error' => $e->getMessage()]);
-        }
-    }
-
-    /**
-     * Cria uma nova tarefa e compartilha com usuários.
+     * Cria uma tarefa para o utilizador autenticado.
      */
     public function create(): void
     {
         header('Content-Type: application/json');
-        $data = json_decode(file_get_contents('php://input'), true) ?? [];
-
-        $shared = $data['shared_with'] ?? [];
-        unset($data['shared_with']);
-
         try {
-            $task = $this->service->create($data);
-
-            $this->shareService->shareUsers($task->id, $shared);
-
+            $data = json_decode(file_get_contents('php://input'), true) ?? [];
+            $task = $this->service->create($data, $this->userId); 
             http_response_code(201);
             echo json_encode($task);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             http_response_code(400);
             echo json_encode(['error' => $e->getMessage()]);
         }
     }
 
     /**
-     * Atualiza os dados da tarefa e seus compartilhamentos.
+     * Atualiza uma tarefa, garantindo que ela pertence ao utilizador autenticado.
      */
     public function update(int $id): void
     {
         header('Content-Type: application/json');
-        $raw  = file_get_contents('php://input');
-        $data = json_decode($raw, true);
-
-        if (!is_array($data)) {
-            parse_str($raw, $data);
-        }
-
-        $shared = $data['shared_with'] ?? [];
-        unset($data['shared_with']);
-
-        $dto = [];
-
-        if (isset($data['title'])) {
-            $dto['title'] = $data['title'];
-        }
-
-        if (isset($data['description'])) {
-            $dto['description'] = $data['description'];
-        }
-
-        if (isset($data['end_date'])) {
-            $dto['endDate'] = $data['end_date'];
-        }
-
-        if (isset($data['priority'])) {
-            $dto['priority'] = (int)$data['priority'];
-        }
-
-        if (isset($data['status'])) {
-            $dto['status'] = $data['status'];
-        }
-
         try {
-            $task = $this->service->update($id, $dto);
-            $this->shareService->shareUsers($id, $shared);
-
-            $out = [
-                'id'          => $task->getId(),
-                'title'       => $task->getTitle(),
-                'description' => $task->getDescription(),
-                'endDate'     => $task->getEndDate(),
-                'priority'    => $task->getPriority(),
-                'status'      => $task->getStatus(),
-                'shared_with' => $this->shareService->getSharedWith($id),
-            ];
-
-            echo json_encode($out);
-        } catch (\Exception $e) {
+            $data = json_decode(file_get_contents('php://input'), true) ?? [];
+            $task = $this->service->update($id, $data, $this->userId);
+            echo json_encode($task);
+        } catch (Exception $e) {
             http_response_code(400);
             echo json_encode(['error' => $e->getMessage()]);
         }
     }
 
     /**
-     * Remove uma tarefa pelo ID.
-     * @param int $id
+     * Apaga uma tarefa, garantindo que ela pertence ao utilizador autenticado.
      */
     public function delete(int $id): void
     {
         header('Content-Type: application/json');
 
         try {
-            $deleted = $this->service->delete($id);
-            if ($deleted) {
-                http_response_code(204);
-            } else {
-                http_response_code(404);
-                echo json_encode(['error' => 'Tarefa não encontrada.']);
-            }
-        } catch (\RuntimeException $e) {
+            $this->service->delete($id, $this->userId);
+            http_response_code(204); // No Content
+        } catch (Exception $e) {
             http_response_code(404);
             echo json_encode(['error' => $e->getMessage()]);
         }

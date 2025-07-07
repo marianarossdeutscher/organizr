@@ -3,6 +3,8 @@ namespace Src\Services;
 
 use Src\Repositories\TaskRepository;
 use Src\Models\Task;
+use InvalidArgumentException;
+use RuntimeException;
 
 class TaskService {
     private TaskRepository $tasks;
@@ -12,86 +14,58 @@ class TaskService {
         $this->tasks = new TaskRepository();
     }
 
-    /**
-     * Retorna todas as tarefas.
-     *
-     * @return Task[]
-     */
-    public function list(): array
+    public function listByUser(int $userId): array
     {
-        return $this->tasks->all();
+        return $this->tasks->findAllByUserId($userId);
     }
 
-    /**
-     * Retorna os dados de uma tarefa.
-     *
-     * @return User
-     */
-    public function getTaskById(int $id): Task 
+    public function create(array $data, int $userId): Task
     {
-        return $this->tasks->findById($id);
-    }
-
-    /**
-     * Cria uma nova tarefa.
-     *
-     * @param array $data Dados para criação da tarefa.
-     * @return Task
-     * @throws \InvalidArgumentException Se dados inválidos.
-     */
-    public function create(array $data): Task
-    {
-        if (empty($data['title']) || empty($data['description'])) {
-            throw new \InvalidArgumentException('Título e descrição são obrigatórios.');
+        if (empty($data['title'])) {
+            throw new InvalidArgumentException('O título é obrigatório.');
         }
 
-        $task = new Task($data);
+        if (isset($data['endDate']) && empty($data['endDate'])) {
+            $data['endDate'] = null;
+        }
 
+        $data['userid'] = $userId;
+
+        $task = new Task($data);
         return $this->tasks->create($task);
     }
 
-    /**
-     * Atualiza uma tarefa existente.
-     *
-     * @param int   $id ID da tarefa.
-     * @param array $data Dados para atualização.
-     * @return Task
-     */
-    public function update(int $id, array $data): Task
+    public function update(int $id, array $data, int $userId): Task
     {
-        $existing = $this->tasks->findById($id);
+        $existing = $this->tasks->findByIdAndUserId($id, $userId);
 
         if (!$existing) {
-            throw new \RuntimeException("Tarefa com ID {$id} não encontrada.");
+            throw new RuntimeException("Tarefa com ID {$id} não encontrada ou não pertence a este utilizador.");
         }
+        
+        $fieldMapping = [
+            'title' => 'title', 'description' => 'description', 'endDate' => 'endDate',
+            'priority' => 'priority', 'status' => 'status'
+        ];
 
-        foreach ([
-            'title',
-            'description',
-            'end_date',
-            'priority',
-            'status'
-        ] as $field) {
-            if (array_key_exists($field, $data) && $data[$field] !== null) {
-                $existing->{$field} = $data[$field];
+        foreach ($fieldMapping as $jsonKey => $modelProperty) {
+            if (array_key_exists($jsonKey, $data)) {
+                if ($jsonKey === 'endDate' && empty($data[$jsonKey])) {
+                    $existing->{$modelProperty} = null;
+                } else {
+                    $existing->{$modelProperty} = $data[$jsonKey];
+                }
             }
         }
 
         return $this->tasks->update($existing);
     }
 
-    /**
-     * Remove uma tarefa pelo ID.
-     *
-     * @param int $id ID da tarefa.
-     * @return bool
-     * @throws \RuntimeException Se tarefa não for encontrada.
-     */
-    public function delete(int $id): bool
+    public function delete(int $id, int $userId): bool
     {
-        $existing = $this->tasks->findById($id);
+        $existing = $this->tasks->findByIdAndUserId($id, $userId);
         if (!$existing) {
-            throw new \RuntimeException("Tarefa com ID {$id} não encontrada.");
+            throw new RuntimeException("Tarefa com ID {$id} não encontrada ou não pertence a este utilizador.");
         }
 
         return $this->tasks->delete($id);

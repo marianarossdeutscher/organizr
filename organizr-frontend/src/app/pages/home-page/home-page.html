@@ -1,0 +1,53 @@
+<div class="app-container">
+  <app-drawer 
+    [isCollapsed]="isSidebarCollapsed"
+    (toggleClicked)="isSidebarCollapsed = !isSidebarCollapsed"
+    (logoutClicked)="logout()">
+  </app-drawer>
+
+  <main class="main-content">
+
+    <app-header 
+      [user]="currentUser"
+      (searchTermChanged)="handleSearch($event)">
+    </app-header>
+
+    <div class="tasks-header">
+      <h2>My tasks</h2>
+    </div>
+
+    <div class="tasks-board">
+      <app-task-column 
+        title="To do"
+        [tasks]="todoTasks"
+        (addTask)="handleAddTask($event)"
+        (editTask)="handleEditTask($event)"
+        (deleteTask)="handleDeleteTask($event)">
+      </app-task-column>
+
+      <app-task-column 
+        title="In progress"
+        [tasks]="inProgressTasks"
+        (addTask)="handleAddTask($event)"
+        (editTask)="handleEditTask($event)"
+        (deleteTask)="handleDeleteTask($event)">
+      </app-task-column>
+
+      <app-task-column 
+        title="Completed"
+        [tasks]="completedTasks"
+        (addTask)="handleAddTask($event)"
+        (editTask)="handleEditTask($event)"
+        (deleteTask)="handleDeleteTask($event)">
+      </app-task-column>
+    </div>
+  </main>
+</div>
+
+<app-task-modal
+  [isOpen]="isModalOpen"
+  [task]="editingTask"
+  [initialStatus]="modalInitialStatus"
+  (formSubmitted)="handleSaveTask($event)"
+  (modalClosed)="closeModal()">
+</app-task-modal>
