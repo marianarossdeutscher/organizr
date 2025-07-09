@@ -1,59 +1,95 @@
-# ProjetoWebEcommerce
+# Organizr
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.0.1.
+O Organizr é uma plataforma web do tipo lista de tarefas (to do list), desenvolvida para a disciplina de Desenvolvimento de Aplicações Web da UDESC CCT.
+O projeto foi desenvolvido pelos estudantes André Eduardo Schmitz e Mariana Rossdeutscher Waltrick Lima.
+## Especificações Técnicas
 
-## Development server
+### Frontend
 
-To start a local development server, run:
+  * **Linguagem:** TypeScript
+  * **Framework:** Angular 20.0.0
+  * **Gerenciador de Pacotes:** npm
+  * **Estilização:** SCSS
+  * **Principais Dependências:**
+      * RxJS
+      * Zone.js
 
-```bash
-ng serve
-```
+### Backend
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+  * **Linguagem:** PHP 8.2.12
+  * **Gerenciador de Pacotes:** Composer
+  * **Principais Dependências:**
+      * `vlucas/phpdotenv`: Para gerenciar variáveis de ambiente.
+      * `firebase/php-jwt`: Para autenticação com JSON Web Tokens.
 
-## Code scaffolding
+### Banco de Dados
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+  * **Sistema:** PostgreSQL
+  * **Tabelas Principais:**
+      * `users`: Armazena informações dos usuários.
+      * `task`: Armazena os detalhes das tarefas.
+      * `task_user`: Tabela de associação para tarefas compartilhadas.
 
-```bash
-ng generate component component-name
-```
+## Instruções para Execução
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+### Pré-requisitos
 
-```bash
-ng generate --help
-```
+  * Node.js e npm
+  * PHP e Composer
+  * PostgreSQL
 
-## Building
+### Backend
 
-To build the project run:
+1.  **Navegue até o diretório do backend:**
 
-```bash
-ng build
-```
+    ```bash
+    cd backend
+    ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+2.  **Instale as dependências do Composer:**
 
-## Running unit tests
+    ```bash
+    composer install
+    ```
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+3.  **Configure as variáveis de ambiente:**
 
-```bash
-ng test
-```
+      * Renomeie ou copie o arquivo `.env.example` para `.env`.
+      * Configure as variáveis de ambiente no arquivo `.env`, incluindo as credenciais do banco de dados e um segredo para o JWT.
 
-## Running end-to-end tests
+4.  **Configure o banco de dados:**
 
-For end-to-end (e2e) testing, run:
+      * Crie um banco de dados no PostgreSQL.
+      * Execute o script `src/Config/db.sql` para criar as tabelas necessárias.
 
-```bash
-ng e2e
-```
+5.  **Inicie o servidor PHP:**
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+    ```bash
+    php -S localhost:8000
+    ```
+    ou pelo XAMPP, iniciando o apache (caso utilizar o XAMPP, criar o projeto dentro do diretório htdocs)
 
-## Additional Resources
+### Frontend
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+1.  **Navegue até o diretório do frontend:**
+
+    ```bash
+    cd organizr-frontend
+    ```
+
+2.  **Instale as dependências do npm:**
+
+    ```bash
+    npm install
+    ```
+
+3.  **Inicie o servidor de desenvolvimento do Angular:**
+
+    ```bash
+    ng serve
+    ```
+     ```bash
+    *incluir comando q eu esqueci*
+    ```
+
+    A aplicação estará disponível em `http://localhost:4200/`. O proxy configurado em `proxy.conf.json` irá redirecionar as chamadas de API para o backend.
