@@ -17,15 +17,17 @@ class TaskRepository {
     {
         $stmt = $this->db->prepare('SELECT * FROM task WHERE userid = :userid ORDER BY taskid DESC');
         $stmt->execute([':userid' => $userId]);
-        return $stmt->fetchAll(PDO::FETCH_CLASS, Task::class);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return array_map(fn($row) => new Task($row), $rows);
     }
 
     public function findByIdAndUserId(int $id, int $userId): ?Task
     {
         $stmt = $this->db->prepare('SELECT * FROM task WHERE taskid = :taskid AND userid = :userid');
         $stmt->execute([':taskid' => $id, ':userid' => $userId]);
-        $task = $stmt->fetchObject(Task::class);
-        return $task ?: null;
+
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+        return new Task($data);
     }
 
     public function create(Task $task): Task
@@ -48,7 +50,7 @@ class TaskRepository {
         return new Task($data);
     }
 
-    public function update(Task $task): Task
+    public function update(Task $task, $userId): Task
     {
         $stmt = $this->db->prepare(
             'UPDATE task SET 
@@ -65,7 +67,7 @@ class TaskRepository {
             ':priority'    => $task->priority,
             ':status'      => $task->status,
             ':taskid'      => $task->id,
-            ':userid'      => $task->userid
+            ':userid'      => $userId
         ]);
 
         $data = $stmt->fetch(PDO::FETCH_ASSOC);

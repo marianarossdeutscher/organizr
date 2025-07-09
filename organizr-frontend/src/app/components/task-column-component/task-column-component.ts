@@ -6,7 +6,10 @@ import { Task } from '../../models/task-model.model';
 @Component({
   selector: 'app-task-column',
   standalone: true,
-  imports: [CommonModule, TaskCardComponent],
+  imports: [
+    CommonModule,
+    TaskCardComponent
+  ],
   templateUrl: './task-column-component.html',
   styleUrls: ['./task-column-component.scss']
 })
@@ -18,11 +21,16 @@ export class TaskColumnComponent {
   @Output() editTask = new EventEmitter<Task>();
   @Output() deleteTask = new EventEmitter<number>();
 
+  onAddTaskClick(): void {
+    this.addTask.emit(this.title);
+  }
+
   onEditTask(task: Task): void {
     this.editTask.emit(task);
   }
 
   onDeleteTask(taskId: number): void {
+    console.log("ondeletetask");
     this.deleteTask.emit(taskId);
   }
 }

@@ -21,8 +21,7 @@ class AuthController {
             if (json_last_error() !== JSON_ERROR_NONE) {
                 throw new Exception('JSON inválido.');
             }
-            
-            // NOVO: Validação para o campo username
+
             if (empty($input['username']) || empty($input['email']) || empty($input['password'])) {
                  throw new Exception('Nome de utilizador, email e palavra-passe são obrigatórios.');
             }
@@ -51,11 +50,12 @@ class AuthController {
                 echo json_encode(['message' => 'Email e senha são obrigatórios.']);
                 return;
             }
-            $token = $this->service->login($input['email'], $input['password']);
+            $loginModel = $this->service->login($input['email'], $input['password']);
             http_response_code(200);
-            echo json_encode(['token' => $token]);
+            echo json_encode($loginModel);
         } catch (Exception $e) {
-            http_response_code(401);
+            $statusCode = $e->getMessage() === 'Credenciais inválidas.' || $e->getMessage() === 'Usuário não encontrado.' ? 401 : 500;
+            http_response_code($statusCode);
             echo json_encode(['message' => $e->getMessage()]);
         }
     }

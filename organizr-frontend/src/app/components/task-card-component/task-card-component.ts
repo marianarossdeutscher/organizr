@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, HostListener } from '@angular/core';
+import { Component, Input, Output, EventEmitter, HostListener, OnInit } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { Task } from '../../models/task-model.model';
 
@@ -11,8 +11,8 @@ import { Task } from '../../models/task-model.model';
 })
 export class TaskCardComponent {
   @Input() task!: Task;
-  @Output() edit = new EventEmitter<void>();
-  @Output() delete = new EventEmitter<void>();
+  @Output() edit = new EventEmitter<Task>(); 
+  @Output() delete = new EventEmitter<number>(); 
 
   isMenuOpen = false;
 
@@ -28,13 +28,14 @@ export class TaskCardComponent {
 
   onEdit(event: MouseEvent): void {
     event.stopPropagation();
-    this.edit.emit();
+    this.edit.emit(this.task); 
     this.isMenuOpen = false;
   }
 
   onDelete(event: MouseEvent): void {
+    console.log("Deleting task");
     event.stopPropagation();
-    this.delete.emit();
+    this.delete.emit(this.task.id); 
     this.isMenuOpen = false;
   }
 }

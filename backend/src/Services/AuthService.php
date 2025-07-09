@@ -4,6 +4,7 @@ namespace Src\Services;
 use Src\Repositories\UserRepository;
 use Src\Models\User;
 use Firebase\JWT\JWT;
+use Src\Models\LoginModel;
 
 class AuthService {
     private UserRepository $users;
@@ -43,7 +44,7 @@ class AuthService {
      * @return string JWT token
      * @throws \RuntimeException Se credenciais inválidas
      */
-    public function login(string $email, string $password): string
+    public function login(string $email, string $password): LoginModel
     {
         $user = $this->users->findByEmail($email);
         if (!$user) {
@@ -67,6 +68,8 @@ class AuthService {
             throw new \RuntimeException('JWT secret não configurado.');
         }
 
-        return JWT::encode($payload, $secret, 'HS256');
+        $token = JWT::encode($payload, $secret, 'HS256');
+
+        return new LoginModel($user, $token);
     }
 }

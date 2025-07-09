@@ -4,10 +4,10 @@
     <input type="text" placeholder="Search" (input)="onSearch($event)">
   </div>
 
-  <div class="user-profile" *ngIf="user">
+  <div class="user-profile" *ngIf="user" (click)="goToSettings()">
     <span>{{ user.name }}</span>
     <div class="user-avatar">
-      <img *ngIf="user.avatarUrl" [src]="user.avatarUrl" alt="User Avatar">
+      <img src="abstract-user-flat-4.png" alt="User Avatar">
     </div>
   </div>
 </header>

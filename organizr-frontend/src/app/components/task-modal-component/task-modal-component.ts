@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, inject } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, inject, OnInit } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Task } from '../../models/task-model.model';
@@ -18,6 +18,7 @@ export class TaskModalComponent implements OnChanges {
   @Input() task: Task | null = null;
   @Input() isOpen: boolean = false;
   @Input() initialStatus: string = 'To do';
+  
 
   @Output() formSubmitted = new EventEmitter<Partial<Task>>();
   @Output() modalClosed = new EventEmitter<void>();
@@ -25,6 +26,7 @@ export class TaskModalComponent implements OnChanges {
   private fb = inject(FormBuilder);
   private datePipe = inject(DatePipe);
   public taskForm: FormGroup;
+  public allUsers: any[] = [];
   
   constructor() {
     this.taskForm = this.fb.group({

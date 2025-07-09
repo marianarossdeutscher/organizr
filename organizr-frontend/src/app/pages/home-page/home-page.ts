@@ -26,13 +26,15 @@ export class HomePage implements OnInit {
   private router = inject(Router);
 
   public isSidebarCollapsed = false;
-  public currentUser: UserProfile | null = { name: 'User Name' };
+  public user = JSON.parse(localStorage.getItem('user') || '{}');
+  public currentUser: UserProfile | null = { name: this.user.username };
 
   public allTasks: Task[] = [];
   public todoTasks: Task[] = [];
   public inProgressTasks: Task[] = [];
   public completedTasks: Task[] = [];
-  
+  private searchTerm: string = '';
+
   public isModalOpen = false;
   public editingTask: Task | null = null;
   public modalInitialStatus: string = 'To do';
@@ -57,13 +59,18 @@ export class HomePage implements OnInit {
   }
 
   organizeTasks(): void {
-    this.todoTasks = this.allTasks.filter(t => t.status === 'To do');
-    this.inProgressTasks = this.allTasks.filter(t => t.status === 'In progress');
-    this.completedTasks = this.allTasks.filter(t => t.status === 'Completed');
+    const sourceTasks = this.searchTerm
+      ? this.allTasks.filter(task => task.title.toLowerCase().includes(this.searchTerm.toLowerCase()))
+      : this.allTasks;
+
+    this.todoTasks = sourceTasks.filter(t => t.status === 'To do');
+    this.inProgressTasks = sourceTasks.filter(t => t.status === 'In progress');
+    this.completedTasks = sourceTasks.filter(t => t.status === 'Completed');
   }
 
   handleSearch(term: string): void {
-    console.log('Termo de pesquisa:', term);
+    this.searchTerm = term;
+    this.organizeTasks();
   }
 
   handleAddTask(status: string): void {
@@ -76,7 +83,7 @@ export class HomePage implements OnInit {
     this.editingTask = task;
     this.isModalOpen = true;
   }
-  
+
   handleDeleteTask(taskId: number): void {
     if (confirm('Tem a certeza que quer apagar esta tarefa?')) {
         this.taskService.deleteTask(taskId).subscribe({

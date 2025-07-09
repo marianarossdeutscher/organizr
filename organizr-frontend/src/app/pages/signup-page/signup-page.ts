@@ -32,7 +32,6 @@ export class SignupPage implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // Formulário atualizado sem os campos 'repeatPassword' e 'terms'
     this.signupForm = this.formBuilder.group({
       username: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
@@ -57,13 +56,11 @@ export class SignupPage implements OnInit {
       return;
     }
 
-    // O payload agora contém apenas os campos necessários
     const payload = this.signupForm.value;
 
     this.http.post(this.apiUrl, payload).subscribe({
       next: (response) => {
         console.log('Registo bem-sucedido!', response);
-        alert('Conta criada com sucesso! Pode agora fazer o login.');
         this.router.navigate(['/login']); 
       },
       error: (err: HttpErrorResponse) => {

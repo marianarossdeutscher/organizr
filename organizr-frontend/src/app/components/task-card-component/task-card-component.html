@@ -1,5 +1,4 @@
-<p>task-card-component works!</p>
-<div class="task-card">
+<div class="task-card" (click)="onEdit($event)">
   <h4>{{ task.title }}</h4>
   <p>{{ task.description }}</p>
   <div class="task-card-footer">
@@ -9,11 +8,11 @@
     <span class="task-date">{{ task.endDate | date: 'MMM, dd' }}</span>
   </div>
 
-  <div class="card-options" (click)="toggleMenu($event)">
+  <div class="card-options" (click)="toggleMenu($event); $event.stopPropagation();">
     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
     <div class="options-menu" *ngIf="isMenuOpen">
-      <a (click)="onEdit($event)">Edit</a>
-      <a (click)="onDelete($event)">Delete</a>
+      <a (click)="onEdit($event); $event.stopPropagation();">Edit</a>
+      <a (click)="onDelete($event);">Delete</a>
     </div>
   </div>
 </div>

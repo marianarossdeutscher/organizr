@@ -1,1 +1,21 @@
-/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+
+/*
+  CORREÇÃO: Reset global para a barra de rolagem.
+  Isso garante que a página HTML e o corpo não tenham margens, preenchimentos ou barras de rolagem próprias.
+  Eles apenas ocuparão 100% da tela, permitindo que os componentes Angular gerenciem seu próprio layout e rolagem interna.
+*/
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* A propriedade mais importante para remover a barra de rolagem extra */
+  font-family: 'Inter', sans-serif; /* Define a fonte padrão para toda a aplicação */
+}
+
+/* Define o box-sizing para todos os elementos. 
+  Isso torna o trabalho com layouts e dimensões mais previsível.
+*/
+* {
+  box-sizing: border-box;
+}

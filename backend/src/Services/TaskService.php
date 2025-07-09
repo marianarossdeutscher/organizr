@@ -14,6 +14,11 @@ class TaskService {
         $this->tasks = new TaskRepository();
     }
 
+    public function getTaskById(int $id, int $userId): Task 
+    {
+        return $this->tasks->findByIdAndUserId($id, $userId);
+    }
+
     public function listByUser(int $userId): array
     {
         return $this->tasks->findAllByUserId($userId);
@@ -58,7 +63,7 @@ class TaskService {
             }
         }
 
-        return $this->tasks->update($existing);
+        return $this->tasks->update($existing, $userId);
     }
 
     public function delete(int $id, int $userId): bool

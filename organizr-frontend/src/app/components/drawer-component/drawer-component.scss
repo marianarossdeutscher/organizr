@@ -6,6 +6,7 @@ $primary-accent: #4A90E2;
 
 .sidebar {
   width: 260px;
+  height: 100%; 
   background-color: $sidebar-bg;
   border-right: 1px solid $border-color;
   display: flex;
@@ -85,7 +86,7 @@ $primary-accent: #4A90E2;
     }
 
     &.active, &:hover {
-      background-color: lighten($primary-accent, 35%);
+      background-color: lighten($primary-accent, 33%);
       color: $primary-accent;
     }
   }

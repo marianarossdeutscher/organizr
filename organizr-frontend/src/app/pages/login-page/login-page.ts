@@ -57,11 +57,12 @@ export class LoginPage implements OnInit {
 
     const { email, password } = this.loginForm.value;
 
-    this.http.post<{ token: string }>(this.apiUrl, { email, password }).subscribe({
+    this.http.post<{ token: string, user: any }>(this.apiUrl, { email, password }).subscribe({
       next: (response) => {
         console.log('Login bem-sucedido!');
 
         localStorage.setItem('authToken', response.token);
+        localStorage.setItem('user', JSON.stringify(response.user));
 
         this.router.navigate(['/home']); 
 

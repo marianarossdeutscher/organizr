@@ -20,7 +20,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit();
 }
 
-// --- Roteamento ---
 $script  = str_replace('\\', '/', $_SERVER['SCRIPT_NAME']);
 $request = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $base    = dirname($script);

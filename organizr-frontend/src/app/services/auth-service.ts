@@ -8,7 +8,6 @@ import { LoginModel } from '../models/login-model.model';
   providedIn: 'root'
 })
 export class AuthService {
-
   constructor(
     private httpClient: HttpClient
   ) { }

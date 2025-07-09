@@ -1,0 +1,24 @@
+<div class="settings-container">
+  <div class="settings-card">
+    <button class="back-button" (click)="goBack()">Back to home page</button>
+    <h2>Edit profile</h2>
+
+    <form [formGroup]="settingsForm" (ngSubmit)="onSubmit()">
+      <div class="form-section">
+        <h4>Personal info</h4>
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input id="username" type="text" formControlName="username">
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input id="email" type="email" formControlName="email">
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary" [disabled]="settingsForm.invalid">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
